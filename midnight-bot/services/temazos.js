@@ -78,7 +78,6 @@ services.deleteAllTemazos = function(msg, bot, config, MongoClient){
 }
 
 services.deleteTemazo = function(msg, bot, config, MongoClient){
-  console.log(msg)
   if(msg.reply_to_message != null && msg.reply_to_message.audio != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
     let deleting = msg.reply_to_message.audio.file_id;
     MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {

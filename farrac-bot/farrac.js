@@ -1,16 +1,11 @@
 const config = require ('./farrac.config');
 const TelegramBot = require("node-telegram-bot-api");
-
 const bot = new TelegramBot(config.botToken, { polling: true });
-
 var MongoClient = require("mongodb").MongoClient, format = require("util").format;
-
-MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function (err, db) {
-    if (err) throw err;
-    console.log("Database created!");
-    db.close();
-  }
-);
+const Audio = require("./services/audios");
+const Farrant = require("./services/farrant");
+const Card = require("./services/card");
+const GIF = require("./services/gifs");
 
 
 bot.onText(/\/add_farrant/, msg => {

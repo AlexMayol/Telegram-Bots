@@ -1,8 +1,8 @@
 let services = {};
 
 
-services.addSticker = function(msg, bot, config, MongoClient) {
-  if (/*msg.from.id == config.subjectID &&*/ msg.reply_to_message != null && msg.reply_to_message.sticker != null ) {
+services.addGIF = function(msg, bot, config, MongoClient) {
+  if (/*msg.from.id == config.subjectID &&*/ msg.reply_to_message != null && msg.reply_to_message.animation != null ) {
     MongoClient.connect(
       config.mongoURI,
       { useNewUrlParser: true },
@@ -12,13 +12,13 @@ services.addSticker = function(msg, bot, config, MongoClient) {
           throw err;
         }
         var dbo = db.db("midnightbot");
-        var myobj = { id: msg.reply_to_message.sticker.file_id, type: "sticker" };
-        dbo.collection("stickers").insertOne(myobj, function(err, res) {
+        var myobj = { id: msg.reply_to_message.animation.file_id, type: "gif" };
+        dbo.collection("gifs").insertOne(myobj, function(err, res) {
           if (err) {
             bot.sendMessage(msg.chat.id, "No se ha podido añadir.");
             throw err;
           }
-          bot.sendMessage(msg.chat.id, "Sticker añadido correctamente.");
+          bot.sendMessage(msg.chat.id, "GIF añadido correctamente.");
           console.log(myobj);
           db.close();
         });
@@ -29,7 +29,7 @@ services.addSticker = function(msg, bot, config, MongoClient) {
   }
 };
 
-services.sticker = function(msg, bot, config, MongoClient) {
+services.GIF = function(msg, bot, config, MongoClient) {
   MongoClient.connect(
     config.mongoURI,
     { useNewUrlParser: true },
@@ -40,7 +40,7 @@ services.sticker = function(msg, bot, config, MongoClient) {
       }
       var dbo = db.db("midnightbot");
       dbo
-        .collection("stickers")
+        .collection("gifs")
         .find({})
         .toArray(function(err, result) {
           if (err) {
@@ -59,12 +59,12 @@ services.sticker = function(msg, bot, config, MongoClient) {
   );
 };
 
-services.deleteAllStickers = function(msg, bot, config, MongoClient){
+services.deleteAllGIFs = function(msg, bot, config, MongoClient){
  MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
     if (err) throw err;
     var dbo = db.db("midnightbot");
     var myquery = { };
-    dbo.collection("stickers").deleteMany(myquery, function(err, obj) {
+    dbo.collection("gifs").deleteMany(myquery, function(err, obj) {
       if (err) throw err;
       if(obj.result.n > 0){
         bot.sendMessage(msg.chat.id, "Todos los stickers borrados.");
@@ -77,14 +77,14 @@ services.deleteAllStickers = function(msg, bot, config, MongoClient){
   })
 }
 
-services.deleteSticker = function(msg, bot, config, MongoClient){
+services.deleteGIF = function(msg, bot, config, MongoClient){
   if(msg.reply_to_message != null && msg.reply_to_message.sticker != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
     let deleting = msg.reply_to_message.sticker.file_id;
     MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
       if (err) throw err;
       var dbo = db.db("midnightbot");
       var myquery = { id: deleting };
-      dbo.collection("stickers").deleteOne(myquery, function(err, obj) {
+      dbo.collection("gifs").deleteOne(myquery, function(err, obj) {
         if (err) throw err;        
         db.close();
         (obj.result.n > 0) ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.") : bot.sendMessage(chatId, "No se ha borrado nada.");

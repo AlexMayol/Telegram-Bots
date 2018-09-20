@@ -79,13 +79,13 @@ services.deleteAllAudios = function(msg, bot, config, MongoClient){
 }
 
 services.deleteAudio = function(msg, bot, config, MongoClient){
-  if(msg.reply_to_message != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
-    //let deleting = msg.reply_to_message.text;
+  if(msg.reply_to_message != null && msg.reply_to_message.voice != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
+    let deleting = msg.reply_to_message.voice.file_id;
     MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
       if (err) throw err;
       var dbo = db.db("midnightbot");
       var myquery = { id: deleting };
-      dbo.collection("farrants").deleteOne(myquery, function(err, obj) {
+      dbo.collection("audios").deleteOne(myquery, function(err, obj) {
         if (err) throw err;        
         db.close();
         (obj.result.n > 0) ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.") : bot.sendMessage(chatId, "No se ha borrado nada.");
@@ -95,5 +95,6 @@ services.deleteAudio = function(msg, bot, config, MongoClient){
     bot.sendMessage(msg.chat.id, "Debes citar un audio para poder borrarlo.");
   }
 }
+
 
 module.exports = services;

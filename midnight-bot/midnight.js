@@ -1,76 +1,80 @@
 const config = require("./midnight.config");
 const TelegramBot = require("node-telegram-bot-api");
-
 const bot = new TelegramBot(config.botToken, { polling: true });
-
-var MongoClient = require("mongodb").MongoClient;
+let MongoClient = require("mongodb").MongoClient;
+const Audio = require("./services/audios");
+const Temazo = require("./services/temazos");
+const Sticker = require("./services/stickers");
+const GIF = require("./services/gifs");
 
 bot.on("message", msg => {
-//   bot.sendAudio(msg.chat.id, 'CQADBAAD8wMAAsUyGVHENnl9mKwoEwI')
 console.log(msg)
 });
 
 bot.onText(/\/audio/i, msg => {
-  const action = require('./services/audios').audio;
-  action(msg, bot, config, MongoClient);
+  Audio.audio(msg, bot, config, MongoClient);
 });
 
 
 bot.onText(/\/add_audio/i, msg => {
-  const action = require('./services/audios').addAudio;
-  action(msg, bot, config, MongoClient);
+  Audio.addAudio(msg, bot, config, MongoClient);
+});
+
+bot.onText(/\/delete_audio/i, msg => {
+  Audio.deleteAudio(msg, bot, config, MongoClient);
 });
 
 bot.onText(/\/delete_all_audios/i, msg => {
-  const action = require('./services/audios').deleteAllAudios;
-  action(msg, bot, config, MongoClient);
+  Audio.deleteAllAudios(msg, bot, config, MongoClient);
 });
 
 bot.onText(/\/temazo/i, msg => {
-  const action = require('./services/temazos').temazo;
-  action(msg, bot, config, MongoClient);
+  Temazo.temazo(msg, bot, config, MongoClient);
 });
 
-
 bot.onText(/\/add_temazo/i, msg => {
-  const action = require('./services/temazos').addTemazo;
-  action(msg, bot, config, MongoClient);
+  Temazo.addTemazo(msg, bot, config, MongoClient);
 });
 
 bot.onText(/\/delete_temazo/i, msg => {
-  const action = require('./services/temazos').deleteTemazo;
-  action(msg, bot, config, MongoClient);
+  Temazo.deleteTemazo(msg, bot, config, MongoClient);
 });
-
 
 bot.onText(/\/delete_all_temazos/i, msg => {
-  const action = require('./services/temazos').deleteAllTemazos;
-  action(msg, bot, config, MongoClient);
+  Temazo.deleteAllTemazos(msg, bot, config, MongoClient);
 });
-
 
 bot.onText(/\/sticker/i, msg => {
-  const action = require('./services/stickers').sticker;
-  action(msg, bot, config, MongoClient);
+  Sticker.sticker(msg, bot, config, MongoClient);
 });
 
-
 bot.onText(/\/add_sticker/i, msg => {
-  const action = require('./services/stickers').addSticker;
-  action(msg, bot, config, MongoClient);
+  Sticker.addSticker(msg, bot, config, MongoClient);
 });
 
 bot.onText(/\/delete_sticker/i, msg => {
-  const action = require('./services/stickers').deleteSticker;
-  action(msg, bot, config, MongoClient);
+  Sticker.deleteSticker(msg, bot, config, MongoClient);
 });
-
 
 bot.onText(/\/delete_all_stickers/i, msg => {
-  const action = require('./services/stickers').deleteAllStickers;
-  action(msg, bot, config, MongoClient);
+  Sticker.deleteAllStickers(msg, bot, config, MongoClient);
 });
 
+bot.onText(/\/gif/i, msg => {
+  GIF.GIF(msg, bot, config, MongoClient);
+});
+
+bot.onText(/\/add_gif/i, msg => {
+  GIF.addGIF(msg, bot, config, MongoClient);
+});
+
+bot.onText(/\/delete_gif/i, msg => {
+  GIF.deleteGIF(msg, bot, config, MongoClient);
+});
+
+bot.onText(/\/delete_all_gifs/i, msg => {
+  GIF.deleteAllGIFs(msg, bot, config, MongoClient);
+});
 
 
 bot.on('polling_error', (error) => {
