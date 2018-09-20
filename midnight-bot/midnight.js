@@ -6,9 +6,12 @@ const Audio = require("./services/audios");
 const Temazo = require("./services/temazos");
 const Sticker = require("./services/stickers");
 const GIF = require("./services/gifs");
+const Fact = require("./services/facts");
 
 bot.on("message", msg => {
-console.log(msg)
+ // console.log(msg)
+  // bot.forwardMessage(<your group id>, <source group id>, msg.id)
+  // bot.forwardMessage(-254703562, -254703562, 4433,)
 });
 
 bot.onText(/\/audio/i, msg => {
@@ -74,6 +77,10 @@ bot.onText(/\/delete_gif/i, msg => {
 
 bot.onText(/\/delete_all_gifs/i, msg => {
   GIF.deleteAllGIFs(msg, bot, config, MongoClient);
+});
+
+bot.onText(/\/fact/i, msg => {
+  Fact.fact(msg, bot, config, MongoClient);
 });
 
 

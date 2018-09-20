@@ -1,8 +1,9 @@
+const Baits = require("./borde");
 let services = {};
 
 
 services.addAudio = function(msg, bot, config, MongoClient) {
-  if (/*msg.from.id == config.subjectID &&*/ msg.reply_to_message != null && msg.reply_to_message.voice != null ) {
+  if (msg.reply_to_message != null && msg.reply_to_message.voice != null ) {
     MongoClient.connect(
       config.mongoURI,
       { useNewUrlParser: true },
@@ -61,6 +62,10 @@ services.audio = function(msg, bot, config, MongoClient) {
 };
 
 services.deleteAllAudios = function(msg, bot, config, MongoClient){
+  if (!config.ownersID.includes(msg.from.id)) {
+    bot.sendMessage(msg.chat.id, Baits.pickBait());
+    return;
+  }
  MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
     if (err) throw err;
     var dbo = db.db("midnightbot");
@@ -79,6 +84,10 @@ services.deleteAllAudios = function(msg, bot, config, MongoClient){
 }
 
 services.deleteAudio = function(msg, bot, config, MongoClient){
+  if (!config.ownersID.includes(msg.from.id)) {
+    bot.sendMessage(msg.chat.id, Baits.pickBait());
+    return;
+  }
   if(msg.reply_to_message != null && msg.reply_to_message.voice != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
     let deleting = msg.reply_to_message.voice.file_id;
     MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
