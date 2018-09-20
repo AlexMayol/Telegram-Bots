@@ -1,8 +1,8 @@
 let services = {};
 
 
-services.addAudio = function(msg, bot, config, MongoClient) {
-  if (/*msg.from.id == config.subjectID &&*/ msg.reply_to_message != null && msg.reply_to_message.voice != null ) {
+services.addFarrant = function(msg, bot, config, MongoClient) {
+  if (msg.reply_to_message.from.id && msg.reply_to_message != null ) {
     MongoClient.connect(
       config.mongoURI,
       { useNewUrlParser: true },
@@ -11,25 +11,24 @@ services.addAudio = function(msg, bot, config, MongoClient) {
           bot.sendMessage(msg.chat.id, "No se ha podido añadir.");
           throw err;
         }
-        var dbo = db.db("midnightbot");
-        var myobj = { id: msg.reply_to_message.voice.file_id, type: "audio" };
-        dbo.collection("audios").insertOne(myobj, function(err, res) {
+        var dbo = db.db("farracbot");
+        var myobj = { text: msg.reply_to_message.text, type: "farrant" };
+        dbo.collection("farrants").insertOne(myobj, function(err, res) {
           if (err) {
             bot.sendMessage(msg.chat.id, "No se ha podido añadir.");
             throw err;
           }
-          bot.sendMessage(msg.chat.id, "Audio añadido correctamente.");
-          console.log(myobj);
+          bot.sendMessage(msg.chat.id, "Farrant añadido correctamente.");
           db.close();
         });
       }
     );
   } else {
-    bot.sendMessage(msg.chat.id, "Error al añadir audio");
+    bot.sendMessage(msg.chat.id, "Debes citar un farrant para poder añadirlo.");
   }
 };
 
-services.audio = function(msg, bot, config, MongoClient) {
+services.farrant = function(msg, bot, config, MongoClient) {
   MongoClient.connect(
     config.mongoURI,
     { useNewUrlParser: true },
@@ -38,9 +37,9 @@ services.audio = function(msg, bot, config, MongoClient) {
         bot.sendMessage(msg.chat.id, "No se ha podido acceder a la lista.");
         throw err;
       }
-      var dbo = db.db("midnightbot");
+      var dbo = db.db("farracbot");
       dbo
-        .collection("audios")
+        .collection("farrants")
         .find({})
         .toArray(function(err, result) {
           if (err) {
@@ -48,11 +47,10 @@ services.audio = function(msg, bot, config, MongoClient) {
             throw err;
           }
           if (result.length > 0) {
-            var audio = result[Math.floor(Math.random() * result.length)];
-
-            bot.sendVoice(msg.chat.id, String(audio.id));
+            var farrant = result[Math.floor(Math.random() * result.length)];
+            bot.sendMessage(msg.chat.id, farrant.text);
           } else {
-            bot.sendMessage(msg.chat.id, "No hay audios en la lista.");
+            bot.sendMessage(msg.chat.id, "No hay farrants en la lista.");
           }
           db.close();
         });
@@ -60,39 +58,39 @@ services.audio = function(msg, bot, config, MongoClient) {
   );
 };
 
-services.deleteAllAudios = function(msg, bot, config, MongoClient){
+services.deleteAllFarrants = function(msg, bot, config, MongoClient){
  MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
     if (err) throw err;
-    var dbo = db.db("midnightbot");
+    var dbo = db.db("farracbot");
     var myquery = { };
-    dbo.collection("audios").deleteMany(myquery, function(err, obj) {
+    dbo.collection("farrants").deleteMany(myquery, function(err, obj) {
       if (err) throw err;
       if(obj.result.n > 0){
-        bot.sendMessage(msg.chat.id, "Todos los audios borrados.");
+        bot.sendMessage(msg.chat.id, "Todos los farrrants borrados.");
       }
       else{
-        bot.sendMessage(msg.chat.id, "No había audios que borrar.");
+        bot.sendMessage(msg.chat.id, "No había farrrants que borrar.");
       }
       db.close();
     });
   })
 }
 
-services.deleteAudio = function(msg, bot, config, MongoClient){
-  if(msg.reply_to_message != null && msg.reply_to_message.voice != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
-    let deleting = msg.reply_to_message.voice.file_id;
+services.deleteFarrant = function(msg, bot, config, MongoClient){
+  if(msg.reply_to_message != null && msg.reply_to_message.text != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
+    let deleting = msg.reply_to_message.text;
     MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
       if (err) throw err;
-      var dbo = db.db("midnightbot");
-      var myquery = { id: deleting };
-      dbo.collection("audios").deleteOne(myquery, function(err, obj) {
+      var dbo = db.db("farracbot");
+      var myquery = { text: deleting };
+      dbo.collection("farrants").deleteOne(myquery, function(err, obj) {
         if (err) throw err;        
         db.close();
         (obj.result.n > 0) ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.") : bot.sendMessage(chatId, "No se ha borrado nada.");
       });
     });
   } else{
-    bot.sendMessage(msg.chat.id, "Debes citar un audio para poder borrarlo.");
+    bot.sendMessage(msg.chat.id, "Debes citar un farrant para poder borrarlo.");
   }
 }
 

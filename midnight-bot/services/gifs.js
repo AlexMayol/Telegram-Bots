@@ -2,7 +2,11 @@ const Baits = require("./borde");
 let services = {};
 
 services.addGIF = function(msg, bot, config, MongoClient) {
-  if (msg.reply_to_message != null && msg.reply_to_message.animation != null) {
+  if (msg.reply_to_message != null) {
+    if(msg.reply_to_message.animation == null){
+      bot.sendMessage(msg.chat.id, "Me da que eso no es un GIF, eh.");
+      return;
+    }
     MongoClient.connect(
       config.mongoURI,
       { useNewUrlParser: true },
@@ -18,14 +22,14 @@ services.addGIF = function(msg, bot, config, MongoClient) {
             bot.sendMessage(msg.chat.id, "No se ha podido añadir.");
             throw err;
           }
-          bot.sendMessage(msg.chat.id, "GIF añadido correctamente.");
+          bot.sendMessage(msg.chat.id, "GIF añadido 😏");
           console.log(myobj);
           db.close();
         });
       }
     );
   } else {
-    bot.sendMessage(msg.chat.id, Baits.pickBait());
+    bot.sendMessage(msg.chat.id,"¿No sabes añadir gifs...?");
   }
 };
 
@@ -64,11 +68,11 @@ services.deleteGIF = function(msg, bot, config, MongoClient) {
     bot.sendMessage(msg.chat.id, Baits.pickBait());
     return;
   }
-  if (
-    msg.reply_to_message != null &&
-    msg.reply_to_message.animation != null &&
-    msg.reply_to_message.from.first_name == "Midnight Bot"
-  ) {
+  if (msg.reply_to_message != null && msg.reply_to_message.from.first_name == "Midnight Bot") {
+    if(msg.reply_to_message.animation == null){
+      bot.sendMessage(msg.chat.id, "Me parece que eso no es un gif 🙃");
+      return;
+    }
     let deleting = msg.reply_to_message.animation.file_id;
     MongoClient.connect(
       config.mongoURI,
@@ -81,13 +85,13 @@ services.deleteGIF = function(msg, bot, config, MongoClient) {
           if (err) throw err;
           db.close();
           obj.result.n > 0
-            ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.")
+            ? bot.sendMessage(msg.chat.id, "Todo borrado 💁🏻‍♂️")
             : bot.sendMessage(chatId, "No se ha borrado nada.");
         });
       }
     );
   } else {
-    bot.sendMessage(msg.chat.id, "Debes citar un gif para poder borrarlo.");
+    bot.sendMessage(msg.chat.id, "Que así no se borra un GIF...");
   }
 };
 
@@ -106,7 +110,7 @@ services.deleteAllGIFs = function(msg, bot, config, MongoClient) {
       dbo.collection("gifs").deleteMany(myquery, function(err, obj) {
         if (err) throw err;
         if (obj.result.n > 0) {
-          bot.sendMessage(msg.chat.id, "Todos los gifs borrados.");
+          bot.sendMessage(msg.chat.id, "A la mierda todo 🙁");
         } else {
           bot.sendMessage(msg.chat.id, "No había gifs que borrar.");
         }

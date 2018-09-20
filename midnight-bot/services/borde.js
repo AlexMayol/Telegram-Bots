@@ -2,7 +2,6 @@ const Baits = {};
 const sentences = [
     "Qué te crees que haces, crack",
     "Me parece que no",
-    ":(",
     "Otro que va de listo",
     "Eres un poco pesado...",
 ]

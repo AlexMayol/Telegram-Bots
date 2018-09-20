@@ -2,7 +2,11 @@ const Baits = require("./borde");
 let services = {};
 
 services.addTemazo = function(msg, bot, config, MongoClient) {
-  if (msg.reply_to_message != null && msg.reply_to_message.audio != null ) {
+  if (msg.reply_to_message != null) {
+    if(msg.reply_to_message.audio == null){
+      bot.sendMessage(msg.chat.id, "¿Seguro que eso es un temazo?");
+      return;
+    }
     MongoClient.connect(
       config.mongoURI,
       { useNewUrlParser: true },
@@ -18,14 +22,14 @@ services.addTemazo = function(msg, bot, config, MongoClient) {
             bot.sendMessage(msg.chat.id, "No se ha podido añadir.");
             throw err;
           }
-          bot.sendMessage(msg.chat.id, "Temazo añadido correctamente.");
+          bot.sendMessage(msg.chat.id, "Temazo añadido 💪🏻");
           console.log(myobj);
           db.close();
         });
       }
     );
   } else {
-    bot.sendMessage(msg.chat.id, "Error al añadir temazo");
+    bot.sendMessage(msg.chat.id, "Aún tienes que aprender a añadir temazos.");
   }
 };
 

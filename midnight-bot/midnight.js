@@ -6,13 +6,14 @@ const Audio = require("./services/audios");
 const Temazo = require("./services/temazos");
 const Sticker = require("./services/stickers");
 const GIF = require("./services/gifs");
-const Fact = require("./services/facts");
 
 bot.on("message", msg => {
  // console.log(msg)
   // bot.forwardMessage(<your group id>, <source group id>, msg.id)
   // bot.forwardMessage(-254703562, -254703562, 4433,)
 });
+
+
 
 bot.onText(/\/audio/i, msg => {
   Audio.audio(msg, bot, config, MongoClient);
@@ -22,6 +23,7 @@ bot.onText(/\/audio/i, msg => {
 bot.onText(/\/add_audio/i, msg => {
   Audio.addAudio(msg, bot, config, MongoClient);
 });
+
 
 bot.onText(/\/delete_audio/i, msg => {
   Audio.deleteAudio(msg, bot, config, MongoClient);
@@ -79,12 +81,31 @@ bot.onText(/\/delete_all_gifs/i, msg => {
   GIF.deleteAllGIFs(msg, bot, config, MongoClient);
 });
 
-bot.onText(/\/fact/i, msg => {
-  Fact.fact(msg, bot, config, MongoClient);
-});
-
 
 bot.on('polling_error', (error) => {
   console.log(error);  // => 'EFATAL'
 });
 
+bot.onText(/pole/i, msg => {
+    bot.sendMessage(msg.chat.id,"Ni pole ni pola, anormal.");
+ });
+
+bot.on("edited_message",msg => {
+  bot.sendMessage(msg.chat.id, "Si editas mensajes es que tienes cosas que ocultar.")
+});
+
+bot.on("pinned_message", msg => {
+  bot.sendMessage(msg.chat.id, "Qué mensaje pineado ni qué niño muerto.")
+})
+
+bot.on("left_chat_member", msg => {
+  bot.sendMessage(msg.chat.id, "Se ha ido porque sois todos unos payasos.")
+});
+
+bot.on("new_chat_title", msg => {
+  bot.sendMessage(msg.chat.id, "Estate quieto, leches.")
+});
+
+bot.on("new_chat_photo", msg => {
+  bot.sendMessage(msg.chat.id, "La de antes estaba mejor.")
+});
