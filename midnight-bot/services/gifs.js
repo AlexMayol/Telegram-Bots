@@ -1,4 +1,4 @@
-const Baits = require("./borde");
+const Baits = require("./Texts/borde");
 let services = {};
 
 services.addGIF = function(msg, bot, config, MongoClient) {

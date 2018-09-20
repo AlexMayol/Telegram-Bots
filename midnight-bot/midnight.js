@@ -6,13 +6,18 @@ const Audio = require("./services/audios");
 const Temazo = require("./services/temazos");
 const Sticker = require("./services/stickers");
 const GIF = require("./services/gifs");
+const OW = require("./services/Texts/OW");
 
 bot.on("message", msg => {
- // console.log(msg)
-  // bot.forwardMessage(<your group id>, <source group id>, msg.id)
-  // bot.forwardMessage(-254703562, -254703562, 4433,)
+  //console.log(msg)
+  if(msg.from.id == "554595825"){ /// || msg.from.id == "15950318"
+    let parse = msg.text.toLowerCase().split(" ");
+    const intersection = OW.words.filter(word => parse.includes(word));
+    if(intersection.length > 0){
+      bot.sendMessage(msg.chat.id, OW.puns[Math.floor(Math.random() * OW.puns.length)])
+    }
+  }
 });
-
 
 
 bot.onText(/\/audio/i, msg => {
@@ -90,6 +95,13 @@ bot.onText(/pole/i, msg => {
     bot.sendMessage(msg.chat.id,"Ni pole ni pola, anormal.");
  });
 
+ bot.onText(/loli/i, msg => {
+  bot.sendMessage(msg.chat.id,"@policia");
+});
+
+bot.onText(/teens/i, msg => {
+  bot.sendMessage(msg.chat.id,"👻");
+});
 bot.on("edited_message",msg => {
   bot.sendMessage(msg.chat.id, "Si editas mensajes es que tienes cosas que ocultar.")
 });
