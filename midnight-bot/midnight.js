@@ -102,9 +102,9 @@ bot.onText(/pole/i, msg => {
 bot.onText(/teens/i, msg => {
   bot.sendMessage(msg.chat.id,"👻");
 });
-bot.on("edited_message",msg => {
-  bot.sendMessage(msg.chat.id, "Si editas mensajes es que tienes cosas que ocultar.")
-});
+// bot.on("edited_message",msg => {
+//   bot.sendMessage(msg.chat.id, "Si editas mensajes es que tienes cosas que ocultar.")
+// });
 
 bot.on("pinned_message", msg => {
   bot.sendMessage(msg.chat.id, "Qué mensaje pineado ni qué niño muerto.")
