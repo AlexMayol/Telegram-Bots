@@ -1,9 +1,9 @@
-const Baits = require("./Texts/borde");
+const Baits = require("./Texts/mood");
 let services = {};
 
 services.addTemazo = function(msg, bot, config, MongoClient) {
   if (msg.reply_to_message != null) {
-    if(msg.reply_to_message.audio == null){
+    if (msg.reply_to_message.audio == null) {
       bot.sendMessage(msg.chat.id, "¿Seguro que eso es un temazo?");
       return;
     }
@@ -63,48 +63,61 @@ services.temazo = function(msg, bot, config, MongoClient) {
   );
 };
 
-services.deleteAllTemazos = function(msg, bot, config, MongoClient){
+services.deleteAllTemazos = function(msg, bot, config, MongoClient) {
   if (!config.ownersID.includes(msg.from.id)) {
     bot.sendMessage(msg.chat.id, Baits.pickBait());
     return;
   }
- MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("midnightbot");
-    var myquery = { };
-    dbo.collection("temazos").deleteMany(myquery, function(err, obj) {
-      if (err) throw err;
-      if(obj.result.n > 0){
-        bot.sendMessage(msg.chat.id, "Todos los temazos borrados.");
-      }
-      else{
-        bot.sendMessage(msg.chat.id, "No había temazos que borrar.");
-      }
-      db.close();
-    });
-  })
-}
-
-services.deleteTemazo = function(msg, bot, config, MongoClient){
-  if (!config.ownersID.includes(msg.from.id)) {
-    bot.sendMessage(msg.chat.id, Baits.pickBait());
-    return;
-  }
-  if(msg.reply_to_message != null && msg.reply_to_message.audio != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
-    let deleting = msg.reply_to_message.audio.file_id;
-    MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
+  MongoClient.connect(
+    config.mongoURI,
+    { useNewUrlParser: true },
+    function(err, db) {
       if (err) throw err;
       var dbo = db.db("midnightbot");
-      var myquery = { id: deleting };
-      dbo.collection("temazos").deleteOne(myquery, function(err, obj) {
-        if (err) throw err;        
+      var myquery = {};
+      dbo.collection("temazos").deleteMany(myquery, function(err, obj) {
+        if (err) throw err;
+        if (obj.result.n > 0) {
+          bot.sendMessage(msg.chat.id, "Todos los temazos borrados.");
+        } else {
+          bot.sendMessage(msg.chat.id, "No había temazos que borrar.");
+        }
         db.close();
-        (obj.result.n > 0) ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.") : bot.sendMessage(chatId, "No se ha borrado nada.");
       });
-    });
-  } else{
+    }
+  );
+};
+
+services.deleteTemazo = function(msg, bot, config, MongoClient) {
+  if (!config.ownersID.includes(msg.from.id)) {
+    bot.sendMessage(msg.chat.id, Baits.pickBait());
+    return;
+  }
+  if (
+    msg.reply_to_message != null &&
+    msg.reply_to_message.audio != null &&
+    msg.reply_to_message.from.first_name == "Midnight Bot"
+  ) {
+    let deleting = msg.reply_to_message.audio.file_id;
+    MongoClient.connect(
+      config.mongoURI,
+      { useNewUrlParser: true },
+      function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("midnightbot");
+        var myquery = { id: deleting };
+        dbo.collection("temazos").deleteOne(myquery, function(err, obj) {
+          if (err) throw err;
+          db.close();
+          obj.result.n > 0
+            ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.")
+            : bot.sendMessage(chatId, "No se ha borrado nada.");
+        });
+      }
+    );
+  } else {
     bot.sendMessage(msg.chat.id, "Debes citar un temazo para poder borrarlo.");
   }
-}
+};
 
 module.exports = services;
