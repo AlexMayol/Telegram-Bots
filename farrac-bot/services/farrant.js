@@ -1,8 +1,7 @@
 let services = {};
 
-
 services.addFarrant = function(msg, bot, config, MongoClient) {
-  if (msg.reply_to_message.from.id && msg.reply_to_message != null ) {
+  if (msg.reply_to_message.from.id && msg.reply_to_message != null) {
     MongoClient.connect(
       config.mongoURI,
       { useNewUrlParser: true },
@@ -58,41 +57,53 @@ services.farrant = function(msg, bot, config, MongoClient) {
   );
 };
 
-services.deleteAllFarrants = function(msg, bot, config, MongoClient){
- MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("farracbot");
-    var myquery = { };
-    dbo.collection("farrants").deleteMany(myquery, function(err, obj) {
-      if (err) throw err;
-      if(obj.result.n > 0){
-        bot.sendMessage(msg.chat.id, "Todos los farrrants borrados.");
-      }
-      else{
-        bot.sendMessage(msg.chat.id, "No había farrrants que borrar.");
-      }
-      db.close();
-    });
-  })
-}
-
-services.deleteFarrant = function(msg, bot, config, MongoClient){
-  if(msg.reply_to_message != null && msg.reply_to_message.text != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
-    let deleting = msg.reply_to_message.text;
-    MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
+services.deleteAllFarrants = function(msg, bot, config, MongoClient) {
+  MongoClient.connect(
+    config.mongoURI,
+    { useNewUrlParser: true },
+    function(err, db) {
       if (err) throw err;
       var dbo = db.db("farracbot");
-      var myquery = { text: deleting };
-      dbo.collection("farrants").deleteOne(myquery, function(err, obj) {
-        if (err) throw err;        
+      var myquery = {};
+      dbo.collection("farrants").deleteMany(myquery, function(err, obj) {
+        if (err) throw err;
+        if (obj.result.n > 0) {
+          bot.sendMessage(msg.chat.id, "Todos los farrrants borrados.");
+        } else {
+          bot.sendMessage(msg.chat.id, "No había farrrants que borrar.");
+        }
         db.close();
-        (obj.result.n > 0) ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.") : bot.sendMessage(chatId, "No se ha borrado nada.");
       });
-    });
-  } else{
+    }
+  );
+};
+
+services.deleteFarrant = function(msg, bot, config, MongoClient) {
+  if (
+    msg.reply_to_message != null &&
+    msg.reply_to_message.text != null &&
+    msg.reply_to_message.from.first_name == "Midnight Bot"
+  ) {
+    let deleting = msg.reply_to_message.text;
+    MongoClient.connect(
+      config.mongoURI,
+      { useNewUrlParser: true },
+      function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("farracbot");
+        var myquery = { text: deleting };
+        dbo.collection("farrants").deleteOne(myquery, function(err, obj) {
+          if (err) throw err;
+          db.close();
+          obj.result.n > 0
+            ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.")
+            : bot.sendMessage(chatId, "No se ha borrado nada.");
+        });
+      }
+    );
+  } else {
     bot.sendMessage(msg.chat.id, "Debes citar un farrant para poder borrarlo.");
   }
-}
-
+};
 
 module.exports = services;

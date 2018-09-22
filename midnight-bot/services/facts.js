@@ -1,9 +1,7 @@
-
 let services = {};
 
-
 services.addFact = function(msg, bot, config, MongoClient) {
-  if (msg.reply_to_message != null && msg.reply_to_message.voice != null ) {
+  if (msg.reply_to_message != null && msg.reply_to_message.voice != null) {
     MongoClient.connect(
       config.mongoURI,
       { useNewUrlParser: true },
@@ -61,49 +59,61 @@ services.fact = function(msg, bot, config, MongoClient) {
   );
 };
 
-services.deleteAllFacts = function(msg, bot, config, MongoClient){
+services.deleteAllFacts = function(msg, bot, config, MongoClient) {
   if (!config.ownersID.includes(msg.from.id)) {
     bot.sendMessage(msg.chat.id, Baits.pickBait());
     return;
   }
- MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("midnightbot");
-    var myquery = { };
-    dbo.collection("facts").deleteMany(myquery, function(err, obj) {
-      if (err) throw err;
-      if(obj.result.n > 0){
-        bot.sendMessage(msg.chat.id, "Todos los facts borrados.");
-      }
-      else{
-        bot.sendMessage(msg.chat.id, "No había facts que borrar.");
-      }
-      db.close();
-    });
-  })
-}
-
-services.deleteFact = function(msg, bot, config, MongoClient){
-  if (!config.ownersID.includes(msg.from.id)) {
-    bot.sendMessage(msg.chat.id, Baits.pickBait());
-    return;
-  }
-  if(msg.reply_to_message != null && msg.reply_to_message.voice != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
-    let deleting = msg.reply_to_message.voice.file_id;
-    MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
+  MongoClient.connect(
+    config.mongoURI,
+    { useNewUrlParser: true },
+    function(err, db) {
       if (err) throw err;
       var dbo = db.db("midnightbot");
-      var myquery = { id: deleting };
-      dbo.collection("facts").deleteOne(myquery, function(err, obj) {
-        if (err) throw err;        
+      var myquery = {};
+      dbo.collection("facts").deleteMany(myquery, function(err, obj) {
+        if (err) throw err;
+        if (obj.result.n > 0) {
+          bot.sendMessage(msg.chat.id, "Todos los facts borrados.");
+        } else {
+          bot.sendMessage(msg.chat.id, "No había facts que borrar.");
+        }
         db.close();
-        (obj.result.n > 0) ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.") : bot.sendMessage(chatId, "No se ha borrado nada.");
       });
-    });
-  } else{
+    }
+  );
+};
+
+services.deleteFact = function(msg, bot, config, MongoClient) {
+  if (!config.ownersID.includes(msg.from.id)) {
+    bot.sendMessage(msg.chat.id, Baits.pickBait());
+    return;
+  }
+  if (
+    msg.reply_to_message != null &&
+    msg.reply_to_message.voice != null &&
+    msg.reply_to_message.from.first_name == "Midnight Bot"
+  ) {
+    let deleting = msg.reply_to_message.voice.file_id;
+    MongoClient.connect(
+      config.mongoURI,
+      { useNewUrlParser: true },
+      function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("midnightbot");
+        var myquery = { id: deleting };
+        dbo.collection("facts").deleteOne(myquery, function(err, obj) {
+          if (err) throw err;
+          db.close();
+          obj.result.n > 0
+            ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.")
+            : bot.sendMessage(chatId, "No se ha borrado nada.");
+        });
+      }
+    );
+  } else {
     bot.sendMessage(msg.chat.id, "Debes citar un audio para poder borrarlo.");
   }
-}
-
+};
 
 module.exports = services;

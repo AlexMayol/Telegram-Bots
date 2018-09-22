@@ -4,12 +4,19 @@
   "description": "telegram bot",
   "main": "index.js",
   "dependencies": {
+    "dotenv": "^6.0.0",
     "mongodb": "^3.1.4",
     "mongoose": "^5.2.15",
     "node-telegram-bot-api": "^0.30.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.6.0",
+    "eslint-config-prettier": "^3.1.0",
+    "prettier": "^1.14.3"
+  },
   "scripts": {
+    "lint": "eslint **/**.js",
+    "format": "prettier --write **/**.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
