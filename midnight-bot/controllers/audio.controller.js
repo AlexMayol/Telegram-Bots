@@ -21,11 +21,11 @@ exports.addAudio = (bot, { reply_to_message, chat }) => {
 exports.audio = (bot, { chat }) => Audio.audio((err, audio) => {
     if (err) {
         console.error(err);
-        return bot.sendMessage(msg.chat.id, "No se ha podido acceder a la lista.");
+        return bot.sendMessage(chat.id, "No se ha podido acceder a la lista.");
       }
 
       if(!audio){
-          return  bot.sendMessage(msg.chat.id, "🗣 No hay audios.");
+          return  bot.sendMessage(chat.id, "🗣 No hay audios.");
       }
 
       bot.sendVoice(chat.id, `${audio.id}`);
