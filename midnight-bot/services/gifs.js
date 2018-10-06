@@ -1,9 +1,9 @@
-const Baits = require("./Texts/borde");
+const Baits = require("./Texts/mood");
 let services = {};
 
 services.addGIF = function(msg, bot, config, MongoClient) {
   if (msg.reply_to_message != null) {
-    if(msg.reply_to_message.animation == null){
+    if (msg.reply_to_message.animation == null) {
       bot.sendMessage(msg.chat.id, "Me da que eso no es un GIF, eh.");
       return;
     }
@@ -29,7 +29,7 @@ services.addGIF = function(msg, bot, config, MongoClient) {
       }
     );
   } else {
-    bot.sendMessage(msg.chat.id,"¿No sabes añadir gifs...?");
+    bot.sendMessage(msg.chat.id, "¿No sabes añadir gifs...?");
   }
 };
 
@@ -68,8 +68,11 @@ services.deleteGIF = function(msg, bot, config, MongoClient) {
     bot.sendMessage(msg.chat.id, Baits.pickBait());
     return;
   }
-  if (msg.reply_to_message != null && msg.reply_to_message.from.first_name == "Midnight Bot") {
-    if(msg.reply_to_message.animation == null){
+  if (
+    msg.reply_to_message != null &&
+    msg.reply_to_message.from.first_name == "Midnight Bot"
+  ) {
+    if (msg.reply_to_message.animation == null) {
       bot.sendMessage(msg.chat.id, "Me parece que eso no es un gif 🙃");
       return;
     }

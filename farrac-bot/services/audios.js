@@ -1,8 +1,10 @@
 let services = {};
 
-
 services.addAudio = function(msg, bot, config, MongoClient) {
-  if (/*msg.from.id == config.subjectID &&*/ msg.reply_to_message != null && msg.reply_to_message.voice != null ) {
+  if (
+    /*msg.from.id == config.subjectID &&*/ msg.reply_to_message != null &&
+    msg.reply_to_message.voice != null
+  ) {
     MongoClient.connect(
       config.mongoURI,
       { useNewUrlParser: true },
@@ -60,41 +62,53 @@ services.audio = function(msg, bot, config, MongoClient) {
   );
 };
 
-services.deleteAllAudios = function(msg, bot, config, MongoClient){
- MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("midnightbot");
-    var myquery = { };
-    dbo.collection("audios").deleteMany(myquery, function(err, obj) {
-      if (err) throw err;
-      if(obj.result.n > 0){
-        bot.sendMessage(msg.chat.id, "Todos los audios borrados.");
-      }
-      else{
-        bot.sendMessage(msg.chat.id, "No había audios que borrar.");
-      }
-      db.close();
-    });
-  })
-}
-
-services.deleteAudio = function(msg, bot, config, MongoClient){
-  if(msg.reply_to_message != null && msg.reply_to_message.voice != null && msg.reply_to_message.from.first_name == "Midnight Bot"){
-    let deleting = msg.reply_to_message.voice.file_id;
-    MongoClient.connect(config.mongoURI, {useNewUrlParser: true}, function(err, db) {
+services.deleteAllAudios = function(msg, bot, config, MongoClient) {
+  MongoClient.connect(
+    config.mongoURI,
+    { useNewUrlParser: true },
+    function(err, db) {
       if (err) throw err;
       var dbo = db.db("midnightbot");
-      var myquery = { id: deleting };
-      dbo.collection("audios").deleteOne(myquery, function(err, obj) {
-        if (err) throw err;        
+      var myquery = {};
+      dbo.collection("audios").deleteMany(myquery, function(err, obj) {
+        if (err) throw err;
+        if (obj.result.n > 0) {
+          bot.sendMessage(msg.chat.id, "Todos los audios borrados.");
+        } else {
+          bot.sendMessage(msg.chat.id, "No había audios que borrar.");
+        }
         db.close();
-        (obj.result.n > 0) ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.") : bot.sendMessage(chatId, "No se ha borrado nada.");
       });
-    });
-  } else{
+    }
+  );
+};
+
+services.deleteAudio = function(msg, bot, config, MongoClient) {
+  if (
+    msg.reply_to_message != null &&
+    msg.reply_to_message.voice != null &&
+    msg.reply_to_message.from.first_name == "Midnight Bot"
+  ) {
+    let deleting = msg.reply_to_message.voice.file_id;
+    MongoClient.connect(
+      config.mongoURI,
+      { useNewUrlParser: true },
+      function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("midnightbot");
+        var myquery = { id: deleting };
+        dbo.collection("audios").deleteOne(myquery, function(err, obj) {
+          if (err) throw err;
+          db.close();
+          obj.result.n > 0
+            ? bot.sendMessage(msg.chat.id, "Se ha borrado correctamente.")
+            : bot.sendMessage(chatId, "No se ha borrado nada.");
+        });
+      }
+    );
+  } else {
     bot.sendMessage(msg.chat.id, "Debes citar un audio para poder borrarlo.");
   }
-}
-
+};
 
 module.exports = services;
