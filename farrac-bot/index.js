@@ -1,6 +1,8 @@
 const TelegramBot = require("node-telegram-bot-api");
 const config = require("./farrac.config");
 
+const {welcomeMessages} = require ("./resources/welcome-messages");
+
 const { FarrantController } = require("./controllers");
 
 const database = require("./database");
@@ -41,6 +43,11 @@ bot.on("pinned_message", msg => {
   bot.sendMessage(msg.chat.id, "¿Desde cuándo fijamos mensajes aquí?");
 });
 
+bot.on("new_chat_members", msg => {
+  bot.sendMessage(msg.chat.id,  welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]);
+});
+
+
 bot.on("left_chat_member", msg => {
   bot.sendMessage(msg.chat.id, "Me pregunto por qué se habrá ido...");
 });
@@ -52,6 +59,7 @@ bot.on("new_chat_title", msg => {
 bot.on("new_chat_photo", msg => {
   bot.sendMessage(msg.chat.id, "La de antes estaba mejor.");
 });
+
 
 process.on("SIGINT", () => {
   database.close();
