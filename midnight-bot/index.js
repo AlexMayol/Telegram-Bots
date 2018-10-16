@@ -1,7 +1,7 @@
 const TelegramBot = require("node-telegram-bot-api");
 const config = require("./midnight.config");
 
-const { AudioController, GifController } = require("./controllers");
+const { AudioController, GifController, StickerController, HitController } = require("./controllers");
 
 const database = require("./database");
 
@@ -14,9 +14,14 @@ database.connect(err => {
     );
     return process.exit();
   }
-  console.log("Database connected");
 });
 
+
+bot.on('message', (msg) => {
+  const chatId = msg.chat.id;
+  console.log(msg);
+  //bot.sendMessage(chatId, "a");
+});
 bot.onText(/\/audio/i, msg => AudioController.audio(bot, msg));
 
 bot.onText(/\/add_audio/i, msg => AudioController.addAudio(bot, msg));
@@ -24,6 +29,14 @@ bot.onText(/\/add_audio/i, msg => AudioController.addAudio(bot, msg));
 bot.onText(/\/delete_audio/i, msg => AudioController.deleteAudio(bot, msg));
 
 bot.onText(/\/delete_all_audios/i, msg => AudioController.deleteAllAudios(bot, msg));
+
+bot.onText(/\/sticker/i, msg => StickerController.sticker(bot, msg));
+
+bot.onText(/\/add_sticker/i, msg => StickerController.addSticker(bot, msg));
+
+bot.onText(/\/delete_sticker/i, msg => StickerController.deleteSticker(bot, msg));
+
+bot.onText(/\/delete_all_stickers/i, msg => StickerController.deleteAllStickers(bot, msg));
 
 bot.onText(/\/gif/i, msg => GifController.gif(bot, msg));
 
@@ -33,6 +46,13 @@ bot.onText(/\/delete_gif/i, msg => GifController.deleteGif(bot, msg));
 
 bot.onText(/\/delete_all_gifs/i, msg => GifController.deleteAllGifs(bot, msg));
 
+bot.onText(/\/temazo/i, msg => HitController.hit(bot, msg));
+
+bot.onText(/\/add_temazo/i, msg => HitController.addHit(bot, msg));
+
+bot.onText(/\/delete_temazo/i, msg => HitController.deleteHit(bot, msg));
+
+bot.onText(/\/delete_all_temazos/i, msg => HitController.deleteAllHits(bot, msg));
 
 bot.on("polling_error", error => {
   console.log(error); // => 'EFATAL'
