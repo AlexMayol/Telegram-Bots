@@ -1,9 +1,9 @@
 const TelegramBot = require("node-telegram-bot-api");
 const config = require("./farrac.config");
 
-const {welcomeMessages} = require ("./resources/welcome-messages");
+const {WelcomeMessages, CongratulationMessages} = require ("./resources");
 
-const { FarrantController } = require("./controllers");
+const { FarrantController, BirthdayController } = require("./controllers");
 
 const database = require("./database");
 
@@ -20,7 +20,8 @@ database.connect(err => {
 });
 
 bot.on('message', (msg) => {
-  console.log(msg);
+  console.log( WelcomeMessages[Math.floor(Math.random() * WelcomeMessages.length)])
+  //bot.sendMessage(msg.chat.id, WelcomeMessages.welcomeMessages[Math.floor(Math.random() * WelcomeMessages.length)]);
 
 });
 
@@ -33,6 +34,9 @@ bot.onText(/\/delete_farrant@Farrac_bot/i, msg => FarrantController.deleteFarran
 
 bot.onText(/\/delete_all_farrants@Farrac_bot/i, msg => FarrantController.deleteAllFarrants(bot, msg));
 
+bot.onText(/\/birthday@Farrac_bot/i, msg => BirthdayController.birthday(bot, msg));
+bot.onText(/\/birthday/i, msg => BirthdayController.birthday(bot, msg));
+
 
 bot.on("polling_error", error => {
   console.log(error); // => 'EFATAL'
@@ -44,7 +48,7 @@ bot.on("pinned_message", msg => {
 });
 
 bot.on("new_chat_members", msg => {
-  bot.sendMessage(msg.chat.id,  welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]);
+  bot.sendMessage(msg.chat.id,  WelcomeMessages[Math.floor(Math.random() * WelcomeMessages.length)]);
 });
 
 
