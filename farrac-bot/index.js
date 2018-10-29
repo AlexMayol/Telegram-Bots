@@ -19,11 +19,11 @@ database.connect(err => {
   console.log("Database connected!");
 });
 
-bot.on('message', (msg) => {
-  console.log( WelcomeMessages[Math.floor(Math.random() * WelcomeMessages.length)])
-  //bot.sendMessage(msg.chat.id, WelcomeMessages.welcomeMessages[Math.floor(Math.random() * WelcomeMessages.length)]);
+// bot.on('message', (msg) => {
+//   console.log( WelcomeMessages[Math.floor(Math.random() * WelcomeMessages.length)])
+//   //bot.sendMessage(msg.chat.id, WelcomeMessages.welcomeMessages[Math.floor(Math.random() * WelcomeMessages.length)]);
 
-});
+// });
 
 
 bot.onText(/\/farrant@Farrac_bot/i, msg => FarrantController.farrant(bot, msg));
@@ -34,8 +34,8 @@ bot.onText(/\/delete_farrant@Farrac_bot/i, msg => FarrantController.deleteFarran
 
 bot.onText(/\/delete_all_farrants@Farrac_bot/i, msg => FarrantController.deleteAllFarrants(bot, msg));
 
-bot.onText(/\/birthday@Farrac_bot/i, msg => BirthdayController.birthday(bot, msg));
-bot.onText(/\/birthday/i, msg => BirthdayController.birthday(bot, msg));
+// bot.onText(/\/birthday@Farrac_bot/i, msg => BirthdayController.birthday(bot, msg));
+// bot.onText(/\/birthday/i, msg => BirthdayController.birthday(bot, msg));
 
 
 bot.on("polling_error", error => {
