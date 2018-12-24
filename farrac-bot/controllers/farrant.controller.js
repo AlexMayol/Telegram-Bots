@@ -41,6 +41,36 @@ exports.addFarrant = (bot, { reply_to_message, chat }) => {
 };
 
 
+exports.listFarrants = (bot, { chat }) =>
+Farrant.listFarrants((err, farrantList) => {
+    if (err) {
+      return bot.sendMessage(chat.id, "No se ha podido acceder a la lista.");
+    }
+    if (!farrantList) {
+      return bot.sendMessage(chat.id, "No hay farrants activos.");
+    }
+    console.log(farrantList)
+    for(let farrant of farrantList){
+      bot.sendMessage(chat.id, farrant.text);
+    }
+  });
+
+
+exports.listDeleteds = (bot, { chat }) =>
+Farrant.listDeleteds((err, farrantList) => {
+    if (err) {
+      return bot.sendMessage(chat.id, "No se ha podido acceder a la lista.");
+    }
+    if (!farrantList) {
+      return bot.sendMessage(chat.id, "No hay farrants borrados.");
+    }
+    console.log(farrantList)
+    for(let farrant of farrantList){
+      bot.sendMessage(chat.id, farrant.text);
+    }
+  });
+
+
 
 exports.deleteFarrant = (bot, { reply_to_message, chat, from}) => { 
   if (!reply_to_message) {
@@ -66,5 +96,15 @@ exports.deleteAllFarrants = (bot, { chat }) => {
       return bot.sendMessage(chat.id, "No se ha podido borrar.");
     }
     return bot.sendMessage(chat.id, "Todos los farrants borrados.");
+  });
+};
+
+
+exports.erase = (bot, { chat }) => {
+  Farrant.erase( (err, res) => {
+    if (err) {
+      return bot.sendMessage(chat.id, "No se ha podido borrar.");
+    }
+    return bot.sendMessage(chat.id, "Todos los farrants borrados DEL TODO");
   });
 };

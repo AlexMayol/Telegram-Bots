@@ -3,15 +3,36 @@ const services = {};
 
 const collection = "farrants";
 
-services.addFarrant = ({ text }, callback) => {
-  const inputData = { text, type: "farrant" };
-  database.collection(collection).insertOne(inputData, callback);
-};
+services.addFarrant = ({
+  text
+}, callback) => {
 
-services.farrant = callback =>
   database
     .collection(collection)
-    .find({})
+    .find({
+      text
+    })
+    .toArray(function(err, result) {
+      if (err) return callback(err);
+      if (result.length == 0) {
+
+        const inputData = {
+          text,
+          type: "farrant",
+          active: 1
+        };
+        database.collection(collection).insertOne(inputData, callback);
+      }
+
+    });
+
+
+};
+
+services.farrant = callback => {
+  database
+    .collection(collection)
+    .find({active:1})
     .toArray(function(err, result) {
       if (err) return callback(err);
       if (result.length == 0) return callback();
@@ -19,21 +40,69 @@ services.farrant = callback =>
       const farrant = result[Math.floor(Math.random() * result.length)];
       callback(null, farrant);
     });
+}
+services.listFarrants = callback =>
+  database
+  .collection(collection)
+  .find({
+    active: 1
+  })
+  .toArray(function(err, result) {
+    if (err) return callback(err);
+    if (result.length == 0) return callback();
+
+    const farrantList = result;
+    callback(null, farrantList);
+  });
+
+services.listDeleteds = callback =>
+  database
+  .collection(collection)
+  .find({
+    active: 0
+  })
+  .toArray(function(err, result) {
+    if (err) return callback(err);
+    if (result.length == 0) return callback();
+
+    const farrantList = result;
+    callback(null, farrantList);
+  });
+
 
 services.deleteFarrant = (reply_to_message, callback) => {
-  console.log(reply_to_message)
   database
     .collection(collection)
-    .deleteOne({ id: reply_to_message.file_id }, (err, result) => {
+    .updateOne({
+      text:reply_to_message.text
+    }, {
+      $set: {
+        active: 0
+      }
+    }, (err, result) => {
       if (err) throw err;
-      if (result.deletedCount > 0) return callback(null, true);
+      if (result.modifiedCount > 0) return callback(null, true);
     });
 };
 
-services.deleteAllFarrants = callback =>
+services.deleteAllFarrants = callback => {
+  database
+  .collection(collection)
+  .updateMany({
+    active:1
+  }, {
+    $set: {
+      active: 0
+    }
+  }, (err, result) => {
+    if (err) throw err;
+    if (result.modifiedCount > 0) return callback(null, true);
+  });
+}
+
+services.erase = callback =>
   database.collection(collection).deleteMany({}, (err, result) => {
     if (err) throw err;
-    console.log(result)
     if (result.deletedCount >= 0) callback(null, true);
   });
 
