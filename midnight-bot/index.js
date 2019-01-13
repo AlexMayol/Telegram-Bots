@@ -18,10 +18,13 @@ database.connect(err => {
 
 
 bot.on('message', (msg) => {
-  const chatId = msg.chat.id;
-  console.log(msg);
+  // const chatId = msg.chat.id;
+  // console.log(msg);
   //bot.sendMessage(chatId, "a");
 });
+
+bot.onText(/this is so sad/, msg => bot.sendMessage(msg.chat.id, "https://www.youtube.com/watch?v=kJQP7kiw5Fk"));
+
 bot.onText(/\/audio/i, msg => AudioController.audio(bot, msg));
 
 bot.onText(/\/add_audio/i, msg => AudioController.addAudio(bot, msg));
