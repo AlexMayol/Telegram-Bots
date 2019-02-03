@@ -9,7 +9,7 @@ Farrant.spoiler((err, spoiler) => {
     if (!spoiler) {
       return bot.sendMessage(chat.id, "No hay spoilers.");
     }
-    // console.log(spoiler)
+    
     bot.sendMessage(chat.id, spoiler.text);
   });
 
@@ -18,21 +18,25 @@ Farrant.spoiler((err, spoiler) => {
       return bot.sendMessage(chat.id, "Los spoilers no se añaden así 🙄");
     }
   
-    if(reply_to_message.forward_from && reply_to_message.forward_from.id == process.env.FARRAC) {
-      // console.log("ok")
+  console.log(reply_to_message)
+    if(reply_to_message.forward_from && reply_to_message.forward_from.username == 'Farrac') {
+  
+  
       Farrant.addSpoiler({ text: reply_to_message.text}, err => {
         if (err) {
+  
           return bot.sendMessage(chat.id, "No se ha podido añadir el spoiler.");
         }
+  
         bot.sendMessage(chat.id, "Spoiler añadido.");
       });
+  
       return;
     }
-  // console.log("k")
+  
     if (reply_to_message.from.id != process.env.FARRAC) {
       return bot.sendMessage(chat.id, "Me da que eso no es un spoiler.");    
     }
-  
     Farrant.addSpoiler({ text: reply_to_message.text}, err => {
       if (err) {
         return bot.sendMessage(chat.id, "No se ha podido añadir.");
@@ -165,5 +169,14 @@ exports.erase = (bot, { chat }) => {
       return bot.sendMessage(chat.id, "No se ha podido borrar.");
     }
     return bot.sendMessage(chat.id, "Todos los farrants borrados DEL TODO");
+  });
+};
+
+exports.eraseSpoilers = (bot, { chat }) => {
+  Farrant.eraseSpoilers( (err, res) => {
+    if (err) {
+      return bot.sendMessage(chat.id, "No se ha podido borrar.");
+    }
+    return bot.sendMessage(chat.id, "Todos los spoilers borrados DEL TODO");
   });
 };

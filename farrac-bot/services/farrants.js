@@ -8,22 +8,25 @@ const spoilers = "spoilers";
 services.addSpoiler = ({
   text
 }, callback) => {
+  console.log("??")
+  console.log(text)
   database
     .collection(spoilers)
     .find({
       text
     })
     .toArray(function(err, result) {
+      console.log('res')
+      console.log(result)
       if (err) return callback(err);
-      if (result.length == 0) {
-
+    
         const inputData = {
           text,
           type: "spoiler",
           active: 1
         };
         database.collection(spoilers).insertOne(inputData, callback);
-      }
+      
 
     });
 };
@@ -42,6 +45,7 @@ services.spoiler = callback => {
 }
 
 services.deleteSpoiler = (reply_to_message, callback) => {
+  console.log("del")
   database
     .collection(spoilers)
     .updateOne({
@@ -157,6 +161,12 @@ services.deleteAllFarrants = callback => {
 
 services.erase = callback =>
   database.collection(collection).deleteMany({}, (err, result) => {
+    if (err) throw err;
+    if (result.deletedCount >= 0) callback(null, true);
+  });
+
+  services.eraseSpoilers = callback =>
+  database.collection(spoilers).deleteMany({}, (err, result) => {
     if (err) throw err;
     if (result.deletedCount >= 0) callback(null, true);
   });

@@ -51,7 +51,8 @@ bot.onText(/\/delete_farrant/i, msg => FarrantController.deleteFarrant(bot, msg)
 
 bot.onText(/\/delete_all_farrants/i, msg => FarrantController.deleteAllFarrants(bot, msg));
 
-bot.onText(/\/erase/i, msg => FarrantController.erase(bot, msg));
+bot.onText(/\/erase_farrants/i, msg => FarrantController.erase(bot, msg));
+bot.onText(/\/erase_spoilers/i, msg => FarrantController.eraseSpoilers(bot, msg));
 
 bot.onText(/\/smash/i, msg =>
   bot.sendMessage(msg.chat.id, "@Farrac @Kyronne @myname_is_elena @AnaSkywalker @JoseStrife @StormBlade24 LET'S SETTLE IT IN SMASH!")
