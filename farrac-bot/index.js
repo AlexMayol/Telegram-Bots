@@ -33,7 +33,11 @@ bot.on('message', (msg) => {
 
 });
 
+bot.onText(/\/spoiler/i, msg => FarrantController.spoiler(bot, msg));
 
+bot.onText(/\/add_spoiler/i, msg => FarrantController.addSpoiler(bot, msg));
+
+bot.onText(/\/delete_spoiler/i, msg => FarrantController.deleteSpoiler(bot, msg));
 
 bot.onText(/\/farrant/i, msg => FarrantController.farrant(bot, msg));
 

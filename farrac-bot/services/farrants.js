@@ -2,6 +2,60 @@ const database = require("../database");
 const services = {};
 
 const collection = "farrants";
+const spoilers = "spoilers";
+
+
+services.addSpoiler = ({
+  text
+}, callback) => {
+  database
+    .collection(spoilers)
+    .find({
+      text
+    })
+    .toArray(function(err, result) {
+      if (err) return callback(err);
+      if (result.length == 0) {
+
+        const inputData = {
+          text,
+          type: "spoiler",
+          active: 1
+        };
+        database.collection(spoilers).insertOne(inputData, callback);
+      }
+
+    });
+};
+
+services.spoiler = callback => {
+  database
+    .collection(spoilers)
+    .find({active:1})
+    .toArray(function(err, result) {
+      if (err) return callback(err);
+      if (result.length == 0) return callback();
+
+      const spoil = result[Math.floor(Math.random() * result.length)];
+      callback(null, spoil);
+    });
+}
+
+services.deleteSpoiler = (reply_to_message, callback) => {
+  database
+    .collection(spoilers)
+    .updateOne({
+      text:reply_to_message.text
+    }, {
+      $set: {
+        active: 0
+      }
+    }, (err, result) => {
+      if (err) throw err;
+      if (result.modifiedCount > 0) return callback(null, true);
+    });
+};
+
 
 services.addFarrant = ({
   text
@@ -26,8 +80,8 @@ services.addFarrant = ({
 
     });
 
-
 };
+
 
 services.farrant = callback => {
   database
@@ -41,6 +95,7 @@ services.farrant = callback => {
       callback(null, farrant);
     });
 }
+
 services.listFarrants = callback =>
   database
   .collection(collection)
